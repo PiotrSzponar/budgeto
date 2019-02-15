@@ -47,7 +47,7 @@ const budgetController = (() => {
   };
 
   return {
-    addItem(type, des, val) {
+    addItem: (type, des, val) => {
       let newItem;
       let ID;
 
@@ -67,7 +67,7 @@ const budgetController = (() => {
 
       return newItem;
     },
-    deleteItem(type, id) {
+    deleteItem: (type, id) => {
       const ids = data.allItems[type].map(current => current.id);
       const index = ids.indexOf(id);
 
@@ -75,7 +75,7 @@ const budgetController = (() => {
         data.allItems[type].splice(index, 1);
       }
     },
-    calculateBudget() {
+    calculateBudget: () => {
       calculateTotal('exp');
       calculateTotal('inc');
 
@@ -87,23 +87,21 @@ const budgetController = (() => {
         data.percentage = -1;
       }
     },
-    calculatePercentages() {
+    calculatePercentages: () => {
       data.allItems.exp.forEach(el => {
         el.calcPercentage(data.totals.inc);
       });
     },
-    getPercentages() {
+    getPercentages: () => {
       const allPerc = data.allItems.exp.map(el => el.getPercentage);
       return allPerc;
     },
-    getBudget() {
-      return {
-        budget: data.budget,
-        totalInc: data.totals.inc,
-        totalExp: data.totals.exp,
-        percentage: data.percentage,
-      };
-    },
+    getBudget: () => ({
+      budget: data.budget,
+      totalInc: data.totals.inc,
+      totalExp: data.totals.exp,
+      percentage: data.percentage,
+    }),
   };
 })();
 
@@ -147,14 +145,12 @@ const UIController = (() => {
   };
 
   return {
-    getInput() {
-      return {
-        type: document.querySelector(DOMstrings.inputType).value,
-        description: document.querySelector(DOMstrings.inputDescription).value,
-        value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
-      };
-    },
-    addListItem(obj, type) {
+    getInput: () => ({
+      type: document.querySelector(DOMstrings.inputType).value,
+      description: document.querySelector(DOMstrings.inputDescription).value,
+      value: parseFloat(document.querySelector(DOMstrings.inputValue).value),
+    }),
+    addListItem: (obj, type) => {
       let html;
       let newHtml;
       let element;
@@ -190,11 +186,11 @@ const UIController = (() => {
 
       document.querySelector(element).insertAdjacentHTML('beforeend', newHtml);
     },
-    deleteListItem(selectorID) {
+    deleteListItem: selectorID => {
       const el = document.getElementById(selectorID);
       el.parentNode.removeChild(el);
     },
-    clearFields() {
+    clearFields: () => {
       const fields = document.querySelectorAll(
         `${DOMstrings.inputDescription}, ${DOMstrings.inputValue}`
       );
@@ -204,7 +200,7 @@ const UIController = (() => {
       });
       fieldsArr[0].focus();
     },
-    displayBudget(obj) {
+    displayBudget: obj => {
       const type = obj.budget > 0 ? 'inc' : 'exp';
       document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(
         obj.budget,
@@ -220,7 +216,7 @@ const UIController = (() => {
       document.querySelector(DOMstrings.percentageLabel).textContent =
         obj.percentage > 0 ? `${obj.percentage}%` : '---';
     },
-    displayPercentages(percentages) {
+    displayPercentages: percentages => {
       const fields = document.querySelectorAll(DOMstrings.expensesPercLabel);
 
       nodeListForEach(fields, (current, index) => {
@@ -228,7 +224,7 @@ const UIController = (() => {
           percentages[index] > 0 ? `${percentages[index]}%` : '---';
       });
     },
-    displayMonth() {
+    displayMonth: () => {
       const now = new Date();
       const month = now.getMonth();
       const months = [
@@ -250,7 +246,7 @@ const UIController = (() => {
         months[month]
       }, ${year}`;
     },
-    changedType() {
+    changedType: () => {
       const fields = document.querySelectorAll(
         `${DOMstrings.inputType},
         ${DOMstrings.inputDescription},
@@ -263,9 +259,7 @@ const UIController = (() => {
 
       document.querySelector(DOMstrings.inputBtn).classList.toggle('exp');
     },
-    getDOMstrings() {
-      return DOMstrings;
-    },
+    getDOMstrings: () => DOMstrings,
   };
 })();
 
@@ -338,7 +332,7 @@ const controller = ((budgetCtrl, UICtrl) => {
   };
 
   return {
-    init() {
+    init: () => {
       UICtrl.displayMonth();
       UICtrl.displayBudget({
         budget: 0,
